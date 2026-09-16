@@ -22,6 +22,7 @@ export const COMMANDS: Command[] = [
   { id: 'open.downloads', title: 'Open downloads' },
   { id: 'open.extensions', title: 'Open extensions' },
   { id: 'open.shortcuts', title: 'Change keyboard shortcut' },
+  { id: 'theme.cycle', title: 'Switch theme', subtitle: 'System, light or dark' },
   { id: 'open.settings', title: 'Open Quick Search settings' },
   { id: 'data.clearHistory', title: 'Clear Quick Search history', subtitle: 'Removes your saved searches' },
 ]

@@ -23,6 +23,8 @@ suggestions; it is now a centered launcher window over tabs, history, bookmarks,
 - **Welcome page** on install showing the shortcut Chrome actually assigned, with a fix link when it
   assigned none.
 - **Settings page** — default engine, theme, per-source toggles, site-shortcut reference, clear data.
+- **Theme toggle in the launcher footer** cycling system → light → dark, mirrored by a
+  "Switch theme" command in the palette, so it no longer takes a trip to Settings.
 - **Matched-character highlighting** and `combobox`/`listbox` roles on results.
 - <kbd>⌘</kbd>/<kbd>Ctrl</kbd>+<kbd>1</kbd>–<kbd>9</kbd> to jump to a result, <kbd>Shift</kbd>+<kbd>Tab</kbd>
   to cycle engines backwards.

@@ -4,13 +4,14 @@ import { engineById, nextEngineId, selectableEngines } from '../../lib/engines'
 import { execute, type LauncherContext } from '../../lib/execute'
 import { FILTER_HINTS } from '../../lib/parseQuery'
 import { clearRecentSearches, recentSearches, rememberSearch } from '../../lib/recent'
-import { DEFAULT_SETTINGS, applyTheme, loadSettings, saveSettings, type Settings } from '../../lib/settings'
+import { DEFAULT_SETTINGS, applyTheme, loadSettings, nextTheme, saveSettings, type Settings, type ThemeMode } from '../../lib/settings'
 import type { Result } from '../../lib/types'
 import ResultRow from './components/ResultRow.vue'
 import { useLauncher } from './useLauncher'
 
 const engineId = ref(DEFAULT_SETTINGS.engineId)
 const sources = ref<Settings['sources']>({ ...DEFAULT_SETTINGS.sources })
+const theme = ref<ThemeMode>(DEFAULT_SETTINGS.theme)
 const engineFlash = ref(false)
 const context = ref<LauncherContext>({})
 const recent = ref<string[]>([])
@@ -35,6 +36,7 @@ onMounted(async () => {
 
   engineId.value = settings.engineId
   sources.value = settings.sources
+  theme.value = settings.theme
   applyTheme(settings.theme)
   recent.value = saved
   context.value = launcherContext ?? {}
@@ -67,8 +69,22 @@ function flashEngine() {
   setTimeout(() => (engineFlash.value = false), 260)
 }
 
+const THEME_ICON: Record<ThemeMode, string> = { system: '\u25D0', light: '\u2600', dark: '\u263D' }
+
+async function cycleTheme() {
+  theme.value = nextTheme(theme.value)
+  applyTheme(theme.value)
+  await saveSettings({ theme: theme.value })
+  inputEl.value?.focus()
+}
+
 async function run(result?: Result) {
   if (!result) return
+
+  if (result.commandId === 'theme.cycle') {
+    await cycleTheme()
+    return
+  }
 
   if (result.kind === 'action' || result.kind === 'suggest') {
     await rememberSearch(result.title)
@@ -230,7 +246,14 @@ async function forgetRecent() {
       <div class="keys">
         <span><kbd>↑↓</kbd> move</span>
         <span><kbd>⏎</kbd> open</span>
-        <span><kbd>⇥</kbd> engine</span>
+        <button
+          class="theme"
+          :title="`Theme: ${theme}`"
+          :aria-label="`Theme: ${theme}. Click to change`"
+          @click="cycleTheme"
+        >
+          {{ THEME_ICON[theme] }}
+        </button>
       </div>
     </div>
   </div>

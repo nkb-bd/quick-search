@@ -73,6 +73,11 @@ shows exactly which engine Enter will use, so you never have to guess.
 Type > to close, duplicate, pin, reload or bookmark the current tab, open a new incognito window, or
 jump to your history, downloads, bookmarks or extensions.
 
+**Light, dark, or follow your system**
+
+One click in the footer cycles system, light and dark — or type > and pick "Switch theme". Quick
+Search matches your system automatically until you tell it otherwise.
+
 **Also in the address bar**
 
 Type qs, press Space, then your search — for when you don't want a window at all.
@@ -136,3 +141,4 @@ it entirely in Settings.
 2. `screenshots/2-command-palette.png` — the `>` command palette
 3. `screenshots/3-filters.png` — prefix filters on the empty state
 4. `screenshots/4-settings.png` — settings: engine, theme, per-source toggles
+5. `screenshots/5-light-theme.png` — the same launcher in light theme

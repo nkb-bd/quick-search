@@ -31,6 +31,12 @@ export async function saveSettings(patch: Partial<Settings>): Promise<Settings> 
   return next
 }
 
+const THEME_ORDER: ThemeMode[] = ['system', 'light', 'dark']
+
+export function nextTheme(theme: ThemeMode): ThemeMode {
+  return THEME_ORDER[(THEME_ORDER.indexOf(theme) + 1) % THEME_ORDER.length]
+}
+
 export function applyTheme(theme: ThemeMode): void {
   if (theme === 'system') document.documentElement.removeAttribute('data-theme')
   else document.documentElement.setAttribute('data-theme', theme)

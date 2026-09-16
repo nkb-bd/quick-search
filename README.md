@@ -21,6 +21,7 @@ Built with Vue 3, Vite and Manifest V3.
   `gh` GitHub, `npm`, `mdn`, `w`, `so`
 - **Six engines, one keystroke** — <kbd>Tab</kbd> cycles Google, Perplexity, DuckDuckGo, Bing, Brave
   and You.com
+- **Light, dark or system** — one click in the launcher footer, or `>` then "Switch theme"
 - **Address bar too** — type `qs` then your search to skip the window entirely
 - **Nothing leaves your device** except the query you type, and only when web suggestions are on
 
