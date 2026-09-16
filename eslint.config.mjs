@@ -5,7 +5,6 @@ import pluginVue from "eslint-plugin-vue"
 import { includeIgnoreFile } from "@eslint/compat"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
-import AutoImportGlobals from "./src/types/.eslintrc-auto-import.json" with { type: "json" }
 import { define } from "./define.config.mjs"
 
 const __filename = fileURLToPath(import.meta.url)
@@ -41,7 +40,6 @@ export default [
         ...globals.browser,
         ...globals.worker,
         ...globals.webextensions,
-        ...AutoImportGlobals.globals,
         ...viteDefineGlobals,
       },
     },
@@ -72,7 +70,7 @@ export default [
     },
   },
   {
-    files: ["**/pages/**/*.vue"],
+    files: ["**/App.vue"],
     rules: {
       "vue/multi-word-component-names": "off",
     },
