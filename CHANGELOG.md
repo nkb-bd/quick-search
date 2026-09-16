@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 — 2026-09-16
+## 1.0.0 — 2026-09-16
 
 First release as a launcher. The extension was a toolbar popup that searched open tabs and Google
 suggestions; it is now a centered launcher window over tabs, history, bookmarks, commands and the web.
