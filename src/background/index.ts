@@ -1,68 +1,96 @@
-// Quick Search Extension Background Script
-import "./recentSearchTracker"
+import { searchUrl } from '../lib/engines'
+import { clearRecentSearches } from '../lib/recent'
+import { loadSettings } from '../lib/settings'
+import { launcherContext, openLauncher } from './launcherWindow'
 
-chrome.runtime.onInstalled.addListener(async (opt) => {
-  console.info('Quick Search extension installed/updated');
-})
+const SUGGEST_ENDPOINT = 'https://suggestqueries.google.com/complete/search'
 
-// Add error handler through addEventListener instead of using inline assignment
-self.addEventListener('error', function(event) {
-  console.info("Error: " + event.message)
-  console.info("Source: " + event.filename)
-  console.info("Line: " + event.lineno)
-  console.info("Column: " + event.colno)
-  console.info("Error object: " + event.error)
-})
-
-// Handle keyboard commands
-chrome.commands.onCommand.addListener((command) => {
-  // The _execute_action command is handled automatically by Chrome
-  // No additional handling needed for the main shortcut
-  console.log('Command received:', command);
-});
-
-// Handle message from popup to get search suggestions
-// Handle search engine configuration
-chrome.storage.onChanged.addListener((changes: { [key: string]: chrome.storage.StorageChange }, areaName: string) => {
-  if (areaName === 'local' && changes.searchEngine) {
-    console.log('Search engine changed:', changes.searchEngine.newValue)
-    // You can broadcast this change to other extension pages if needed
+chrome.runtime.onInstalled.addListener(details => {
+  if (details.reason === 'install') {
+    chrome.tabs.create({ url: chrome.runtime.getURL('src/ui/welcome/index.html') })
   }
 })
 
-// Handle message from popup to get search suggestions
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log('Background received message:', message.action);
+chrome.action.onClicked.addListener(() => {
+  void openLauncher()
+})
 
-  if (message.action === 'getSearchSuggestions') {
-    const query = message.query;
+chrome.commands.onCommand.addListener(command => {
+  if (command === 'open-launcher') void openLauncher()
+})
 
-    // Fetch suggestions from Google
-    fetch(`https://suggestqueries.google.com/complete/search?client=chrome&q=${encodeURIComponent(query)}`)
-      .then(response => response.json())
-      .then(data => {
-        // Google's response format is an array where the second item contains the suggestions
-        const suggestions = data[1] || [];
-        sendResponse({ success: true, suggestions });
-      })
-      .catch(error => {
-        console.error('Error fetching search suggestions:', error);
-        // Fallback to mock suggestions if the API fails
-        const fallbackSuggestions = [
-          `${query} search`,
-          `${query} online`,
-          `${query} tutorial`,
-          `${query} examples`,
-          `${query} documentation`
-        ];
-        sendResponse({ success: false, suggestions: fallbackSuggestions, error: error.message });
-      });
+type Respond = (response?: unknown) => void
 
-    // Return true to indicate that the response will be sent asynchronously
-    return true;
+chrome.runtime.onMessage.addListener((message, _sender, sendResponse: Respond) => {
+  if (message?.action === 'getContext') {
+    sendResponse(launcherContext())
+    return false
   }
-});
 
-console.info("hello world from background")
+  if (message?.action === 'clearHistory') {
+    clearRecentSearches().then(() => sendResponse({ ok: true }))
+    return true
+  }
 
-export {}
+  if (message?.action === 'suggest') {
+    fetchSuggestions(message.term)
+      .then(suggestions => sendResponse({ suggestions }))
+      .catch(() => sendResponse({ suggestions: [] }))
+    return true
+  }
+
+  return false
+})
+
+async function fetchSuggestions(term: string): Promise<string[]> {
+  if (!term) return []
+
+  const response = await fetch(`${SUGGEST_ENDPOINT}?client=chrome&q=${encodeURIComponent(term)}`)
+  const data = await response.json()
+  return Array.isArray(data?.[1]) ? data[1] : []
+}
+
+chrome.omnibox.setDefaultSuggestion({ description: 'Quick Search: open tabs, history and bookmarks' })
+
+chrome.omnibox.onInputChanged.addListener((text, suggest) => {
+  void buildOmniboxSuggestions(text).then(suggest)
+})
+
+chrome.omnibox.onInputEntered.addListener(async (text, disposition) => {
+  const url = text.startsWith('http') ? text : searchUrl((await loadSettings()).engineId, text)
+
+  if (disposition === 'newForegroundTab') await chrome.tabs.create({ url })
+  else if (disposition === 'newBackgroundTab') await chrome.tabs.create({ url, active: false })
+  else await chrome.tabs.update({ url })
+})
+
+async function buildOmniboxSuggestions(text: string) {
+  if (!text.trim()) return []
+
+  const [tabs, history] = await Promise.all([
+    chrome.tabs.query({}),
+    chrome.history.search({ text, maxResults: 5, startTime: 0 }),
+  ])
+
+  const matched = tabs
+    .filter(tab => `${tab.title} ${tab.url}`.toLowerCase().includes(text.toLowerCase()))
+    .slice(0, 3)
+    .map(tab => ({ content: tab.url ?? '', description: `Tab — ${escapeXml(tab.title ?? '')}` }))
+
+  const visited = history
+    .filter(item => item.url)
+    .map(item => ({
+      content: item.url ?? '',
+      description: `History — ${escapeXml(item.title || item.url || '')}`,
+    }))
+
+  return [...matched, ...visited].filter(item => item.content).slice(0, 6)
+}
+
+function escapeXml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}

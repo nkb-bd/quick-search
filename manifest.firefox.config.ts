@@ -15,9 +15,10 @@ export default defineManifest((env) => ({
     persistent: false,
   },
   permissions: [
-    // @ts-expect-error background permission is not supported in Firefox
+    // @ts-expect-error permissions is always an array in the shared manifest
     ...ManifestConfig.permissions.filter(
-      (permission) => permission !== "background",
+      // "favicon" is Chrome-only; Firefox has no chrome-extension://…/_favicon/ endpoint
+      (permission) => !["background", "favicon"].includes(permission),
     ),
   ],
 }))
