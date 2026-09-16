@@ -25,6 +25,12 @@ export default {
   minimum_chrome_version: "104",
   action: {
     default_title: "Quick Search",
+    default_icon: {
+      16: "src/assets/logo-16x16.png",
+      32: "src/assets/logo-32x32.png",
+      48: "src/assets/logo-48x48.png",
+      128: "src/assets/logo-128-128.png",
+    },
   },
   background: {
     service_worker: "src/background/index.ts",
@@ -50,6 +56,8 @@ export default {
     },
   },
   icons: {
+    16: "src/assets/logo-16x16.png",
+    32: "src/assets/logo-32x32.png",
     48: "src/assets/logo-48x48.png",
     128: "src/assets/logo-128-128.png",
   },
