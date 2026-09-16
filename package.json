@@ -70,6 +70,7 @@
     "lint:manifest": "web-ext lint --pretty",
     "typecheck": "vue-tsc --noEmit",
     "verify": "tsx scripts/verify-launcher.mts && tsx scripts/verify-background.mts",
-    "shots": "node scripts/store-shots.mjs"
+    "shots": "node scripts/store-shots.mjs",
+    "promo": "node scripts/promo-tile.mjs"
   }
 }
