@@ -5,7 +5,7 @@ bookmark — or search the web across six engines without touching the mouse.
 
 Built with Vue 3, Vite and Manifest V3.
 
-![Quick Search](screenshots/one.png)
+![Quick Search](screenshots/1-unified-results.png)
 
 ## What it does
 

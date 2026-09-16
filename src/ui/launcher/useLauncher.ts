@@ -60,15 +60,16 @@ export function useLauncher(engineId: () => string, sources: () => Settings['sou
     controller.abort()
     controller = new AbortController()
     clearTimeout(remoteTimer)
+    isFetching.value = false
 
     const current = ++generation
     const currentPlan = plan.value
 
-    if (!currentPlan.term) {
+    // A bare filter prefix (">") has no term yet but should still list its source.
+    if (!currentPlan.term && !currentPlan.only) {
       localResults.value = []
       remoteResults.value = []
       selectedIndex.value = 0
-      isFetching.value = false
       return
     }
 
