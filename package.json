@@ -68,6 +68,7 @@
     "launch:all": "tsx scripts/launch.ts --all",
     "lint": "eslint . --fix --cache",
     "lint:manifest": "web-ext lint --pretty",
-    "typecheck": "vue-tsc --noEmit"
+    "typecheck": "vue-tsc --noEmit",
+    "verify": "tsx scripts/verify-launcher.mts && tsx scripts/verify-background.mts"
   }
 }
