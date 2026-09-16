@@ -1,7 +1,7 @@
 {
   "name": "quick-multi-search-engine",
   "displayName": "Quick Search — Tabs, History & Multi-Engine Launcher",
-  "description": "A keyboard launcher for Chrome: jump to any open tab, past visit or bookmark, or search the web across engines — from one shortcut.",
+  "description": "One shortcut to search open tabs, history, bookmarks and the web. Works on every page, even chrome://. Never reads your pages.",
   "version": "0.1.0",
   "private": true,
   "type": "module",
