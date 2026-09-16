@@ -69,6 +69,7 @@
     "lint": "eslint . --fix --cache",
     "lint:manifest": "web-ext lint --pretty",
     "typecheck": "vue-tsc --noEmit",
-    "verify": "tsx scripts/verify-launcher.mts && tsx scripts/verify-background.mts"
+    "verify": "tsx scripts/verify-launcher.mts && tsx scripts/verify-background.mts",
+    "shots": "node scripts/store-shots.mjs"
   }
 }
