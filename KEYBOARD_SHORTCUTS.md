@@ -1,47 +1,44 @@
 # Keyboard Shortcuts
 
-The Quick Search extension supports customizable keyboard shortcuts for quick access.
+## Opening the launcher
 
-## Default Shortcut
+| Platform | Shortcut |
+| --- | --- |
+| Windows / Linux | <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Space</kbd> |
+| macOS | <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>Space</kbd> |
 
-### Windows/Linux:
-- **Ctrl+Shift+Space** - Open Quick Search popup (universal launcher pattern)
+Chrome can only *suggest* a shortcut. If another extension already claimed this combination, Chrome
+leaves it unassigned — the welcome page and **Settings** both show the shortcut you actually have, and
+link to `chrome://extensions/shortcuts` if you need to set one.
 
-### macOS:
-- **Command+Shift+Space** - Open Quick Search popup (universal launcher pattern)
+Clicking the toolbar icon opens the same launcher.
 
-## Customizing Shortcuts
+## Inside the launcher
 
-1. **Via Extension Settings:**
-   - Click the extension icon
-   - Click the gear icon (⚙️) to open Settings
-   - Scroll to "Keyboard Shortcuts" section
-   - Click "Configure Shortcuts" button
+| Key | Action |
+| --- | --- |
+| <kbd>↑</kbd> <kbd>↓</kbd> | Move through results |
+| <kbd>Enter</kbd> | Open the selected result |
+| <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd> | Next / previous search engine |
+| <kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>1</kbd>–<kbd>9</kbd> | Jump straight to that result |
+| <kbd>Esc</kbd> | Clear the query; on an empty query, close the launcher |
 
-2. **Via Chrome Settings:**
-   - Go to `chrome://extensions/shortcuts`
-   - Find "Quick Search" extension
-   - Click in the shortcut field and press your desired key combination
+The first row is always an explicit *Search &lt;engine&gt;* action, so <kbd>Enter</kbd> on a fresh query
+always does the visible thing.
 
-## Shortcut Function
+## Filters and site shortcuts
 
-- **Open popup**: Opens the search popup (same as clicking the extension icon)
+Type the prefix, a space, then your search.
 
-## Why This Shortcut?
+| Prefix | Searches |
+| --- | --- |
+| `t` | Open tabs only |
+| `h` | History only |
+| `b` | Bookmarks only |
+| `>` | Commands (close tab, new incognito window, settings…) |
+| `g` `p` `d` `bi` `br` `y` | Google, Perplexity, DuckDuckGo, Bing, Brave, You.com |
+| `yt` `gh` `npm` `mdn` `w` `so` | YouTube, GitHub, npm, MDN, Wikipedia, Stack Overflow |
 
-- **Ctrl+Shift+Space**: Universal launcher pattern (used by many apps like Spotlight, Alfred)
+## Address bar
 
-## Common Conflicts to Avoid
-
-- **Ctrl+K**: Often used by browsers for address bar focus
-- **Ctrl+T**: New tab (browser)
-- **Ctrl+Shift+T**: Reopen closed tab (browser)
-- **Ctrl+L**: Address bar focus (browser)
-- **F3**: Find in page (browser)
-
-## Notes
-
-- Shortcuts must include a modifier key (Ctrl, Alt, Shift, or Command on Mac)
-- Some key combinations may conflict with browser or system shortcuts
-- If a shortcut doesn't work, try a different combination
-- Changes take effect immediately without restarting the browser
+Type `qs`, press <kbd>Space</kbd>, then your search to use Quick Search without opening the launcher.

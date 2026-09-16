@@ -1,122 +1,110 @@
-# Quick Search Chrome Extension
+# Quick Search
 
-A fast and intelligent search extension for Chrome with auto-suggestions, theme support, and customizable keyboard shortcuts.
+A keyboard launcher for Chrome. One shortcut to reach any open tab, any page you have visited, any
+bookmark — or search the web across six engines without touching the mouse.
 
-Built with Vue 3, Vite, and Chrome Extension Manifest V3.
+Built with Vue 3, Vite and Manifest V3.
 
-## 🚀 Features
+![Quick Search](screenshots/one.png)
 
-- **Smart Auto-suggestions**: Get suggestions from open tabs and Google search as you type
-- **Multiple Search Engines**: Choose from Google, Bing, DuckDuckGo, and Yahoo
-- **Light/Dark Theme**: Automatic theme detection with manual toggle
-- **Keyboard Shortcuts**: Customizable shortcuts for quick access
-- **Recent Searches**: Keep track of your recent searches
-- **Privacy Controls**: Clear search history when needed
+## What it does
 
-## ⌨️ Default Keyboard Shortcuts
+- **One window, every source** — open tabs, browsing history, bookmarks, web suggestions and browser
+  commands, ranked together
+- **Opens centered** — a floating window in the upper third of your focused window, not a panel pinned
+  to the toolbar corner, and it works on `chrome://` pages and the Web Store
+- **Instant local results** — tabs, history and bookmarks render on every keystroke; web suggestions
+  merge in when they arrive, without moving your selection
+- **Frecency ranking** — matches are weighted by how recently and how often you visited, not just by
+  text similarity, and duplicates across sources collapse into one row
+- **Filters and site shortcuts** — `t` tabs, `h` history, `b` bookmarks, `>` commands, `yt` YouTube,
+  `gh` GitHub, `npm`, `mdn`, `w`, `so`
+- **Six engines, one keystroke** — <kbd>Tab</kbd> cycles Google, Perplexity, DuckDuckGo, Bing, Brave
+  and You.com
+- **Address bar too** — type `qs` then your search to skip the window entirely
+- **Nothing leaves your device** except the query you type, and only when web suggestions are on
 
-### Windows/Linux:
-- **Ctrl+Shift+Space** - Open Quick Search popup
+## Shortcut
 
-### macOS:
-- **Command+Shift+Space** - Open Quick Search popup
+| Platform | Shortcut |
+| --- | --- |
+| Windows / Linux | <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Space</kbd> |
+| macOS | <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>Space</kbd> |
 
-## 🛠️ Installation
+Chrome can only suggest a shortcut, so it may arrive unassigned if another extension holds that
+combination. The welcome page shows the shortcut you actually have and links to
+`chrome://extensions/shortcuts`.
 
-### For Development:
-1. Clone this repository
-2. Run `pnpm install` to install dependencies
-3. Run `pnpm build:chrome` to build the extension
-4. Open Chrome and go to `chrome://extensions/`
-5. Enable "Developer mode"
-6. Click "Load unpacked" and select the `dist/chrome` directory
+Full key reference: [KEYBOARD_SHORTCUTS.md](KEYBOARD_SHORTCUTS.md).
 
-### For Production:
-1. Download the latest release
-2. Follow steps 4-6 above
+## Install
 
-## 🎨 Customization
+### From source
 
-### Theme Settings:
-- Click the extension icon
-- Click the gear icon (⚙️) to open Settings
-- Toggle between light and dark themes
-
-### Keyboard Shortcuts:
-- Go to Settings → Keyboard Shortcuts
-- Click "Configure Shortcuts" to customize
-- Or go directly to `chrome://extensions/shortcuts`
-
-### Search Engine:
-- Go to Settings → Search Engine
-- Select your preferred default search engine
-
-## 🔧 Development
-
-### Build Commands:
 ```bash
-# Install dependencies
 pnpm install
-
-# Build for Chrome
 pnpm build:chrome
-
-# Development mode (with hot reload)
-pnpm dev:chrome
-
-# Clean build and test
-./build-and-test.sh
 ```
 
-### Project Structure:
+Then open `chrome://extensions/`, enable **Developer mode**, click **Load unpacked** and select
+`dist/chrome`.
+
+### Development
+
+```bash
+pnpm dev:chrome     # hot reload
+pnpm build          # chrome + firefox production zips
+pnpm typecheck
+pnpm lint
+./build-and-test.sh # clean production build with load instructions
+```
+
+## Permissions
+
+| Permission | Why |
+| --- | --- |
+| `storage` | Settings and recent searches, stored locally |
+| `tabs` | Match and focus your open tabs |
+| `windows` | Open the launcher window centered, and focus the right window when you pick a tab |
+| `history` | Match pages you have visited |
+| `bookmarks` | Match bookmarks, and save the current tab from the bookmark action |
+| `favicon` | Site icons from Chrome's local cache — no requests to a favicon service |
+| `host: suggestqueries.google.com` | Web autocomplete, disableable in Settings |
+
+There is **no** `<all_urls>` permission and no content script: Quick Search never reads or changes the
+pages you visit. See [PRIVACY_POLICY.md](PRIVACY_POLICY.md).
+
+## Architecture
+
 ```
 src/
-├── assets/              # Logo and static assets
-├── background/          # Background script for API calls
-├── components/          # Reusable Vue components
-├── composables/         # Vue composables
-├── devtools/           # DevTools integration
-├── locales/            # Internationalization files
-├── stores/             # Pinia state management
-├── types/              # TypeScript type definitions
-├── ui/
-│   ├── action-popup/   # Main search popup
-│   └── devtools-panel/ # DevTools panel
-└── utils/              # Utility functions
+├── background/       Service worker: launcher window, suggest proxy, omnibox
+│   ├── index.ts
+│   └── launcherWindow.ts   create / reuse / center / close-on-blur
+├── lib/              Browser-agnostic core
+│   ├── engines.ts    Single engine + bang registry
+│   ├── score.ts      Fuzzy matching, frecency, dedupe, ranking
+│   ├── parseQuery.ts Prefix and bang parsing
+│   ├── execute.ts    Opening results and running commands
+│   ├── settings.ts   Settings load/save + theme
+│   ├── recent.ts     Recent searches
+│   └── sources/      tabs · history · bookmarks · commands · suggest
+└── ui/
+    ├── launcher/     The launcher window (bare Vue, no router/UI kit)
+    ├── options/      Settings page
+    ├── welcome/      Post-install onboarding
+    └── shared/       Shared page styles
 ```
 
-## 📦 Build Output
+Adding a source means writing one file in `lib/sources/` that implements `Source` and listing it in
+`useLauncher.ts`. Adding an engine or a site shortcut is one line in `lib/engines.ts`.
 
-The extension builds to `dist/chrome/` with:
-- Optimized JavaScript bundles
-- CSS with theme support
-- Manifest V3 configuration
-- Service worker for background tasks
-- Zip file ready for Chrome Web Store
+## Browser support
 
-## 🔒 Permissions
+Chrome 104+ and Chromium browsers (Edge, Brave, Arc, Vivaldi). A Firefox build is produced by
+`pnpm build:firefox`; the `favicon` permission is Chrome-only and is filtered out there, so Firefox
+falls back to glyph icons.
 
-The extension requires minimal permissions:
-- **storage**: Save user preferences and recent searches
-- **tabs**: Access tab information for suggestions
-- **host_permissions**: Fetch search suggestions from Google
+## License
 
-## 🎯 Browser Support
-
-- Chrome (Manifest V3)
-- Chromium-based browsers
-- Edge (Chromium)
-
-## 📄 License
-
-MIT License - see LICENSE file for details
-
-
-
-## Support
-
-For issues and feature requests, please use the GitHub issue tracker.
-
----
-
-Built with Vue 3, Vite, and Chrome Extension Manifest V3
+MIT

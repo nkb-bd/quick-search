@@ -1,62 +1,47 @@
-# Privacy Policy for Quick Search Extension
+# Privacy Policy — Quick Search
 
-## Data Collection
-This extension collects and stores the following data locally on your device:
-- Search queries you enter
-- Websites you visit (for recent navigation tracking)
-- Browser tabs you switch between (used to show recently visited sites in search suggestions)
-- Search engine preferences (stored locally to remember your preferred search engine)
+Quick Search has no servers, no analytics, and no accounts. Everything it stores stays in your browser.
 
-## Permission Justifications
+## What leaves your device
 
-### Host Permissions
-The extension requires host permissions to:
-- Access web pages to provide search suggestions based on your browsing history
-- Fetch website icons (favicons) to enhance the visual experience
-- Make search requests to your chosen search engine
+Exactly one thing: when web suggestions are enabled, the text you type in the launcher is sent to
+Google Suggest (`https://suggestqueries.google.com`) to fetch autocomplete results. Nothing else is
+sent anywhere.
 
-### Storage Permission
-The extension uses storage to:
-- Save your search engine preferences
-- Store recent searches for quick access
-- Remember your search history for better suggestions
-- All data is stored locally and never transmitted to external servers
+You can turn this off in **Settings → Sources → Web suggestions**. With it off, Quick Search makes no
+network requests at all.
 
-### Tabs Permission
-The extension uses tabs permission to:
-- Monitor your active tab to provide relevant search suggestions
-- Show recently visited sites in the search results
-- Track your current browsing context for better search results
+## What is read on your device
 
-### Remote Code Permission
-The extension uses remote code to:
-- Fetch search suggestions from your chosen search engine
-- Load website icons (favicons) for better visual experience
-- Access Chrome's APIs for extension functionality
+| Permission | Why |
+| --- | --- |
+| `tabs` | Match your open tabs so you can jump to one instead of opening a duplicate |
+| `history` | Match pages you have already visited |
+| `bookmarks` | Match your bookmarks, and save the current tab when you run the bookmark action |
+| `windows` | Open the launcher window centered on your focused window |
+| `favicon` | Render site icons from Chrome's local favicon cache — no icon requests to any server |
+| `storage` | Remember your engine, theme, source toggles, and recent searches |
 
-## Data Storage
-- All data is stored locally in your browser using Chrome's storage API
-- No data is transmitted to external servers
-- Data is synchronized across your browser sessions on the same device
+Each source can be disabled individually in Settings. Reading is on-demand and in-memory: Quick Search
+never copies your history or bookmarks anywhere.
 
-## Data Usage
-The collected data is used to:
-- Provide search suggestions based on your browsing history
-- Show recent searches and visited sites
-- Improve the search experience with personalized results
+## What is stored
 
-## Data Control
-You can:
-- Clear all stored data through the extension settings
-- Disable tracking features
-- Uninstall the extension to remove all data
+In `chrome.storage.local`, on this device only:
 
-## Third-Party Services
-The extension may use:
-- Google Search API for search suggestions
-- Website favicon services for displaying site icons
+- Your settings (default engine, theme, which sources are enabled)
+- Your recent searches in the launcher (most recent 30)
+
+Clear the recent searches at any time from **Settings → Data**, or with the
+*Clear Quick Search history* action inside the launcher. Uninstalling removes everything.
+
+## Host permissions
+
+Quick Search requests one host: `https://suggestqueries.google.com/*`. It does not request access to
+the pages you visit and injects no scripts into any page.
 
 ## Contact
-For questions about this privacy policy, contact: lukman.nakib@gmail.com
 
-Last updated: June 8, 2025
+lukman.nakib@gmail.com
+
+Last updated: September 16, 2026
