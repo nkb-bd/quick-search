@@ -107,9 +107,6 @@ a page without remembering its URL. History is read on demand and never copied o
 **bookmarks** — Matches the user's bookmarks against their query, and creates a bookmark for the
 current tab when the user runs the "Bookmark current tab" command.
 
-**windows** — Opens the launcher window centered on the user's focused window, and focuses the
-correct window when the user selects a tab that lives in a different one.
-
 **favicon** — Displays site icons for tab and bookmark results using Chrome's local favicon cache,
 so no icon requests are made to any external service.
 
