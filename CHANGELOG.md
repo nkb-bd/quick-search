@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.1 — 2026-09-25
+
+### Fixed
+
+- Dropped the `windows` entry from `permissions`: it is not a Chrome permission (the windows API
+  needs none), so Chrome reported it as unknown.
+
 ## 1.0.0 — 2026-09-16
 
 First release as a launcher. The extension was a toolbar popup that searched open tabs and Google

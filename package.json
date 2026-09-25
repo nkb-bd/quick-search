@@ -2,7 +2,7 @@
   "name": "quick-multi-search-engine",
   "displayName": "Quick Search — Tabs, History & Multi-Engine Launcher",
   "description": "One shortcut to search open tabs, history, bookmarks and the web. Works on every page, even chrome://. Never reads your pages.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "type": "module",
   "repository": {
