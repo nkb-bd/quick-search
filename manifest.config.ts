@@ -44,7 +44,7 @@ export default {
     keyword: "qs",
   },
   offline_enabled: true,
-  permissions: ["storage", "tabs", "windows", "history", "bookmarks", "favicon"],
+  permissions: ["storage", "tabs", "history", "bookmarks", "favicon"],
   host_permissions: ["https://suggestqueries.google.com/*"],
   commands: {
     "open-launcher": {
