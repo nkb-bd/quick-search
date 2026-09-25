@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 
 .eslintcache
+
+# Chrome Web Store credentials
+.env.submit
