@@ -77,6 +77,7 @@ the email from the dashboard's Service account field cuts access immediately.
 | `tag vX ≠ package.json vY` | Tag the commit that bumped the version, or bump and re-tag |
 | `serviceAccountPrivateKey … empty` | The private key secret is missing — `gh secret set` it |
 | Upload rejected: version already exists | Versions are never reusable; bump the patch number |
+| `400 INVALID_ITEM_METADATA` at "Submitting for review" | The zip uploaded fine; the listing is incomplete (often a missing permission justification on the Privacy tab). Dashboard → item → **Why can't I submit?** → fix → click **Submit for review** there; no re-tag needed |
 | `zip has files not in the build` | A stale file leaked in; the clean rebuild should prevent it — check `dist/` |
 
 ## Version rules
