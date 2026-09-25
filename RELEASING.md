@@ -1,31 +1,83 @@
 # Releasing
 
+## How publishing works
+
+Pushing a version tag publishes. Nothing else does — commits to `main` never ship.
+
+```
+git push origin v1.0.2
+  └─ GitHub Actions: .github/workflows/publish.yml
+       1. pnpm install --frozen-lockfile
+       2. pnpm typecheck + pnpm verify          stop on any failure
+       3. pnpm release:zip                       wipe dist/chrome, rebuild, zip
+          └─ scripts/verify-release.mjs          tag == package.json version?
+                                                 zip == fresh build, nothing extra?
+       4. upload the zip as a run artifact       (download it from the run page)
+       5. pnpm submit:chrome                     upload + submit for review (API v2)
+  └─ Chrome Web Store reviews it (hours to days)
+  └─ You click **Publish** in the dashboard      STAGED_PUBLISH: nothing goes live without you
+```
+
+Watch it: `gh run watch` or the repo's **Actions** tab. GitHub emails you if a run fails.
+
 ## Steps
 
 ```bash
-# 1. verify
+# 1. verify locally
 pnpm typecheck && pnpm lint && pnpm verify
 
-# 2. bump the version in package.json ONLY
-#    manifest.config.ts derives the manifest version from it,
-#    build-and-test.sh reads it for the zip name.
-#    Editing it anywhere else creates a mismatch.
-
+# 2. bump the version in package.json ONLY (manifest.config.ts derives from it)
 # 3. add a section at the top of CHANGELOG.md
+# 4. load dist/chrome unpacked after `pnpm build:chrome` and press the shortcut once
 
-# 4. build
-pnpm build          # -> dist/chrome-<version>.zip, dist/firefox-<version>.zip
-
-# 5. load dist/chrome unpacked and press the shortcut once
-#    chrome://extensions -> Developer mode -> Load unpacked
-
-# 6. commit and tag
+# 5. commit, tag, push — the tag push is the release
 git commit -am "RELEASE: Version <version>"
 git tag -a v<version> -m "Quick Search <version>"
+git push origin main v<version>
+
+# 6. when the dashboard shows the item approved: Publish
 ```
 
-Upload at https://chrome.google.com/webstore/devconsole → the item → **Package → Upload new
-package** → update listing fields from `STORE_LISTING.md` if they changed → **Submit for review**.
+The tag must equal `package.json`'s version (`v1.0.2` ↔ `1.0.2`) or the run stops before uploading.
+
+### Dry run (checks everything, uploads nothing)
+
+```bash
+gh workflow run publish.yml -f dry_run=true && gh run watch
+```
+
+### Without GitHub
+
+`pnpm publish:chrome` runs the same build, checks and submit locally. It reads credentials from
+`.env.submit` (gitignored — copy `.env.submit.example`).
+
+## Credentials
+
+A Google **service account** logs in to the Chrome Web Store API on your behalf — a robot account
+with no password, only a private key. It can upload, submit and publish **every item under the
+publisher**, and nothing else in your Google account.
+
+| Where | What |
+| --- | --- |
+| Google Cloud project `cws-publisher-509717` | Service account `cws-publish@cws-publisher-509717.iam.gserviceaccount.com`, Chrome Web Store API enabled, no roles, no billing |
+| CWS dashboard → Settings → **Service account** | That email, authorizing it for this publisher (one allowed per publisher) |
+| GitHub → Settings → Secrets → Actions | `CHROME_PUBLISHER_ID`, `CHROME_EXTENSION_ID`, `CHROME_SERVICE_ACCOUNT_CLIENT_EMAIL`, `CHROME_SERVICE_ACCOUNT_PRIVATE_KEY` |
+| Your password manager | The JSON key file — nowhere else |
+
+Secrets are encrypted, masked as `***` in (public) run logs, and never given to fork pull requests.
+
+**If the key leaks:** Cloud Console → Service accounts → `cws-publish` → Keys → delete it, create a
+new JSON key, then `gh secret set CHROME_SERVICE_ACCOUNT_PRIVATE_KEY` from the new file. Removing
+the email from the dashboard's Service account field cuts access immediately.
+
+### Troubleshooting
+
+| Error | Fix |
+| --- | --- |
+| `tag vX ≠ package.json vY` | Tag the commit that bumped the version, or bump and re-tag |
+| `serviceAccountPrivateKey … empty` | The private key secret is missing — `gh secret set` it |
+| Upload rejected: version already exists | Versions are never reusable; bump the patch number |
+| `zip has files not in the build` | A stale file leaked in; the clean rebuild should prevent it — check `dist/` |
 
 ## Version rules
 
@@ -47,8 +99,8 @@ Adding a permission that creates a new user-facing warning **disables the extens
 existing user** until each one re-approves it in `chrome://extensions`. Most never do, and the loss
 is silent.
 
-Already granted, so free to build on: `storage`, `tabs`, `windows`, `history`, `bookmarks`,
-`favicon`, and the `suggestqueries.google.com` host.
+Already granted, so free to build on: `storage`, `tabs`, `history`, `bookmarks`, `favicon`, and the
+`suggestqueries.google.com` host. (The windows API needs no permission.)
 
 Anything beyond that — notably `<all_urls>` for an in-page overlay — belongs in
 `optional_host_permissions`, requested at runtime from a settings toggle, so existing users are
@@ -60,6 +112,7 @@ never disabled.
 - [ ] Loaded unpacked and pressed the shortcut
 - [ ] CHANGELOG entry written
 - [ ] Version bumped in `package.json` only
+- [ ] Tag pushed, run green, approved, then Publish clicked
 - [ ] Screenshots still match the UI (`screenshots/`, 1280x800)
 - [ ] `STORE_LISTING.md` matches what is live, if the listing changed
 - [ ] No new permission warnings, or a deliberate decision to accept one
