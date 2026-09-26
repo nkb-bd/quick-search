@@ -73,6 +73,7 @@
     "verify": "tsx scripts/verify-launcher.mts && tsx scripts/verify-background.mts",
     "shots": "node scripts/store-shots.mjs",
     "promo": "node scripts/promo-tile.mjs",
+    "frames": "node scripts/store-frames.mjs",
     "release:zip": "rm -rf dist/chrome dist/chrome-*.zip && pnpm build:chrome && node scripts/verify-release.mjs",
     "submit:chrome": "publish-extension --chrome-zip dist/chrome-$npm_package_version.zip",
     "publish:chrome": "pnpm release:zip && pnpm submit:chrome"

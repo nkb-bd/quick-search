@@ -134,8 +134,13 @@ it entirely in Settings.
 
 ## Screenshots (1280x800)
 
-1. `screenshots/1-unified-results.png` — one query, results from tabs, history, bookmarks and the web
-2. `screenshots/2-command-palette.png` — the `>` command palette
-3. `screenshots/3-filters.png` — prefix filters on the empty state
-4. `screenshots/4-settings.png` — settings: engine, theme, per-source toggles
-5. `screenshots/5-light-theme.png` — the same launcher in light theme
+Upload `screenshots/listing/`: captioned frames around the real UI. Regenerate with
+`pnpm shots && pnpm frames` (the plain `screenshots/*.png` are the unframed captures).
+
+1. `screenshots/listing/1-unified-results.png` — "Every tab. Every visit. One keystroke."
+2. `screenshots/listing/2-command-palette.png` — "Run the browser from the keyboard."
+3. `screenshots/listing/3-filters.png` — "One letter narrows it down."
+4. `screenshots/listing/4-settings.png` — "Your engine. Your sources."
+5. `screenshots/listing/5-light-theme.png` — "Light or dark, your call."
+
+Promo tiles: `screenshots/promo-small-440x280.jpg`, `screenshots/promo-marquee-1400x560.jpg`.

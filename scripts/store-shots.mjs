@@ -14,6 +14,9 @@ const PROFILE = mkdtempSync(join(tmpdir(), 'quick-search-shots-'))
 const CDP_PORT = 9355
 const VITE_PORT = 5599
 const W = 1280, H = 800
+// Captured at 3x so store-frames.mjs can enlarge the launcher without upscaling.
+const SCALE = 3
+const RAW = join(OUT, 'raw')
 
 function findChrome() {
   if (process.env.CHROME_PATH) return process.env.CHROME_PATH
@@ -43,7 +46,7 @@ const vite = spawn('npx', ['vite', '--config', 'vite.preview.config.ts', '--port
 const chrome = spawn(CHROME, [
   `--user-data-dir=${PROFILE}`, `--remote-debugging-port=${CDP_PORT}`,
   '--headless=new', '--no-first-run', '--no-default-browser-check',
-  '--force-device-scale-factor=2', '--hide-scrollbars', 'about:blank',
+  `--force-device-scale-factor=${SCALE}`, '--hide-scrollbars', 'about:blank',
 ], { stdio: 'ignore' })
 
 let failures = 0
@@ -72,7 +75,7 @@ async function connect(url) {
     })
   await send('Page.enable')
   await send('Runtime.enable')
-  await send('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 2, mobile: false })
+  await send('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: SCALE, mobile: false })
   return { send, close: () => ws.close(), targetId: t.id }
 }
 
@@ -120,10 +123,9 @@ async function capture(name, { url, query = '', theme, settle = 900, ready = '.f
     if (query) { await type(c, query); await sleep(settle) }
     await sleep(500)
     const { data } = await c.send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false })
-    const raw = join(tmpdir(), `${name}-2x.png`)
+    const raw = join(RAW, `${name}@${SCALE}x.png`)
     writeFileSync(raw, Buffer.from(data, 'base64'))
     execFileSync('sips', ['-z', String(H), String(W), raw, '--out', join(OUT, `${name}.png`)], { stdio: 'ignore' })
-    rmSync(raw, { force: true })
     console.log(`  ✔ ${name}.png  ${W}x${H}`)
     c.close(); await http(`/json/close/${c.targetId}`)
     return true
@@ -138,7 +140,7 @@ try {
   for (let i = 0; i < 60; i++) {
     try { await fetch(`http://127.0.0.1:${VITE_PORT}/`); break } catch { await sleep(250) }
   }
-  mkdirSync(OUT, { recursive: true })
+  mkdirSync(RAW, { recursive: true })
   // Prime Vite: the first request compiles the entry graph, which can outlast a page load.
   for (const path of ['/', '/main.ts', '/options.html', '/options.ts']) {
     try { await fetch(`http://127.0.0.1:${VITE_PORT}${path}`) } catch { /* not fatal */ }

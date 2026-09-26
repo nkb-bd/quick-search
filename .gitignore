@@ -27,3 +27,6 @@ dist-ssr
 
 # Chrome Web Store credentials
 .env.submit
+
+# 3x screenshot captures (inputs for store-frames.mjs)
+screenshots/raw/
