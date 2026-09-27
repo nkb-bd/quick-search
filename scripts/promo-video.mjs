@@ -110,11 +110,24 @@ try {
   await sleep(2400)
 
   await clear(page, 7)
-  await caption(page, 'Tab switches between six engines')
+  await caption(page, 'Six engines — press Tab to switch')
   await page.keyboard.type('lofi beats', { delay: 120 })
-  await sleep(600)
-  for (let i = 0; i < 3; i++) { await badge(page, ['Tab']); await page.keyboard.press('Tab'); await sleep(700) }
-  await sleep(900)
+  await sleep(700)
+  for (let i = 0; i < 5; i++) { await badge(page, ['Tab']); await page.keyboard.press('Tab'); await sleep(850) }
+  await sleep(500)
+
+  await caption(page, 'Or click the one you want')
+  const chip = page.locator('.engines .engine', { hasText: 'DuckDuckGo' })
+  await chip.evaluate((el) => { el.style.transition = 'box-shadow .2s'; el.style.boxShadow = '0 0 0 3px #7da2ff' })
+  await sleep(500)
+  await chip.click()
+  await sleep(1400)
+  await chip.evaluate((el) => { el.style.boxShadow = '' })
+
+  await clear(page, 10)
+  await caption(page, 'Or prefix it: p = Perplexity, d = DuckDuckGo')
+  await page.keyboard.type('p lofi beats', { delay: 130 })
+  await sleep(2600)
 
   await caption(page, 'Quick Search — every tab, every visit, one keystroke')
   await sleep(3000)
