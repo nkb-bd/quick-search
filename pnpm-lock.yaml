@@ -63,6 +63,9 @@ importers:
       globals:
         specifier: ^16.0.0
         version: 16.0.0
+      playwright:
+        specifier: 1.63.0
+        version: 1.63.0
       prettier:
         specifier: ^3.5.3
         version: 3.5.3
@@ -1944,6 +1947,16 @@ packages:
 
   pino@9.6.0:
     resolution: {integrity: sha512-i85pKRCt4qMjZ1+L7sy2Ag4t1atFcdbEt76+7iRJn1g2BvsnRMGu9p8pivl9fs63M2kF/A0OacFZhTub+m/qMg==}
+    hasBin: true
+
+  playwright-core@1.63.0:
+    resolution: {integrity: sha512-rYCsBF/M5HjUch52bbtVONEFjv6Xu8sm8h72dNlR5bzIE1fvC/bxgspzkjSfU+MweEMmPM8KJebG6nnyxo5mCg==}
+    engines: {node: '>=20'}
+    hasBin: true
+
+  playwright@1.63.0:
+    resolution: {integrity: sha512-+7ziBLidS4NaNCdt57SUDT+wYmmd5fmiQejUic/kb+YsYSCPyOOE9sebzMjNmQrsnNpDJqd4WHvV/8lfKfUDUg==}
+    engines: {node: '>=20'}
     hasBin: true
 
   postcss-selector-parser@6.0.16:
@@ -4340,6 +4353,12 @@ snapshots:
       safe-stable-stringify: 2.4.3
       sonic-boom: 4.1.0
       thread-stream: 3.1.0
+
+  playwright-core@1.63.0: {}
+
+  playwright@1.63.0:
+    dependencies:
+      playwright-core: 1.63.0
 
   postcss-selector-parser@6.0.16:
     dependencies:

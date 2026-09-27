@@ -30,3 +30,6 @@ dist-ssr
 
 # 3x screenshot captures (inputs for store-frames.mjs)
 screenshots/raw/
+
+# generated promo video (pnpm video)
+screenshots/*.webm

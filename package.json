@@ -30,6 +30,7 @@
     "eslint-plugin-vue": "^10.1.0",
     "get-installed-browsers": "^0.1.7",
     "globals": "^16.0.0",
+    "playwright": "1.63.0",
     "prettier": "^3.5.3",
     "publish-browser-extension": "^6.1.1",
     "terser": "^5.39.0",
@@ -74,6 +75,7 @@
     "shots": "node scripts/store-shots.mjs",
     "promo": "node scripts/promo-tile.mjs",
     "frames": "node scripts/store-frames.mjs",
+    "video": "node scripts/promo-video.mjs",
     "release:zip": "rm -rf dist/chrome dist/chrome-*.zip && pnpm build:chrome && node scripts/verify-release.mjs",
     "submit:chrome": "publish-extension --chrome-zip dist/chrome-$npm_package_version.zip",
     "publish:chrome": "pnpm release:zip && pnpm submit:chrome"
