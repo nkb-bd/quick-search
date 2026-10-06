@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.1.0 — 2026-10-07
+
+### Fixed
+
+- **Launcher no longer pulls you out of full screen on macOS.** The launcher opened as a separate
+  window, which macOS moves to its own Space when Chrome is full screen. It now opens inside the
+  current page there, and falls back to the window only on pages Chrome does not allow
+  (`chrome://`, the Web Store).
+
+### Added
+
+- **Settings → Open the launcher as**: popup window (default, as before), overlay on the page, or
+  Chrome's side panel. The overlay closes with Escape, a click outside it, or the shortcut again.
+
+### Changed
+
+- Colours and borders meet WCAG 2.1 AA: darker accent blue (match highlights, the engine badge and
+  the active engine now pass 4.5:1), readable active engine in dark mode, a visible outline on the
+  keyboard-selected result, and 3:1 borders on the theme button, settings controls and switches.
+- New permissions `activeTab`, `scripting` and `sidePanel`. None of them shows a warning, so existing
+  installs stay enabled.
+
 ## 1.0.1 — 2026-09-25
 
 ### Fixed
