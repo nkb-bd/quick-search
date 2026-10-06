@@ -100,8 +100,9 @@ Adding a permission that creates a new user-facing warning **disables the extens
 existing user** until each one re-approves it in `chrome://extensions`. Most never do, and the loss
 is silent.
 
-Already granted, so free to build on: `storage`, `tabs`, `history`, `bookmarks`, `favicon`, and the
-`suggestqueries.google.com` host. (The windows API needs no permission.)
+Already granted, so free to build on: `storage`, `tabs`, `history`, `bookmarks`, `favicon`,
+`activeTab`, `scripting`, `sidePanel`, and the `suggestqueries.google.com` host. (The windows API
+needs no permission.)
 
 Anything beyond that — notably `<all_urls>` for an in-page overlay — belongs in
 `optional_host_permissions`, requested at runtime from a settings toggle, so existing users are
@@ -109,7 +110,7 @@ never disabled.
 
 ## Checklist
 
-- [ ] `pnpm verify` green (27 checks)
+- [ ] `pnpm verify` green (43 checks)
 - [ ] Loaded unpacked and pressed the shortcut
 - [ ] CHANGELOG entry written
 - [ ] Version bumped in `package.json` only

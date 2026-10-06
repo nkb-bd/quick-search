@@ -38,9 +38,10 @@ settings page you were already looking at.
 
 **It never touches the pages you visit**
 
-Quick Search asks for no access to website content. It injects no scripts and reads nothing from
-the pages you browse — there is no "read and change all your data on all websites" in its
-permissions, because it does not need it.
+Quick Search asks for no access to website content and reads nothing from the pages you browse —
+there is no "read and change all your data on all websites" in its permissions, because it does not
+need it. When you choose the in-page overlay (or use Chrome full screen), it places its own search
+box over the current tab only when you press the shortcut — the page itself is never read.
 
 The only thing that ever leaves your device is the text you type, sent to Google Suggest for
 autocomplete — and that is a single toggle in Settings. Turn web suggestions off and Quick Search
@@ -112,6 +113,17 @@ so no icon requests are made to any external service.
 
 **storage** — Stores the user's settings (default engine, theme, which sources are enabled) and
 their recent searches locally on the device.
+
+**activeTab** — When the user presses the Quick Search shortcut or clicks its icon, grants temporary
+access to that one tab so the launcher can be shown on top of it. No other tab, and no tab the user
+did not invoke Quick Search on, is ever accessed.
+
+**scripting** — Adds the launcher's own search box (an isolated extension frame) to the current tab,
+in overlay mode or when Chrome is full screen. The injected code only creates and removes that box;
+it never reads or changes the page's content.
+
+**sidePanel** — Lets the user open the launcher in Chrome's side panel, if they pick that option in
+Settings.
 
 **host permission: https://suggestqueries.google.com/** — Fetches search autocomplete suggestions
 for the text the user types. This is the extension's only network request, and the user can disable
