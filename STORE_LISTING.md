@@ -23,77 +23,31 @@ not here, or the two will drift.
 
 ## Detailed description
 
-**Every tab, every page you've visited, every bookmark — one shortcut.**
+Plain text — the dashboard does not render Markdown. Paste as-is.
 
-Press Ctrl+Shift+Space (Cmd+Shift+Space on Mac) anywhere in Chrome. Start typing. Quick Search
-matches your open tabs, your browsing history, your bookmarks and web suggestions at the same time,
-ranked together, and opens whatever you pick.
+```text
+Search your open tabs, history, bookmarks and the web from one shortcut.
 
-**Works on every page — including the ones other launchers can't reach**
+Press Cmd+Shift+Space (Ctrl+Shift+Space on Windows) anywhere in Chrome, type, and press Enter. Results from every source appear together, ranked by how recently and how often you visit them.
 
-Most command palettes inject themselves into the page you're on, which means they simply don't
-appear on chrome:// pages, the Chrome Web Store, PDFs, or a blank new tab. Quick Search opens its
-own window, centered on your screen, so the shortcut works the same everywhere — including the
-settings page you were already looking at. Prefer it inside the page, or docked in Chrome's side
-panel? Pick either in Settings. In full screen it opens inside the page automatically, so it never
-pulls you out to another desktop.
+Works on every page
+Opens in its own window, so it also works on chrome:// pages, the Web Store and PDFs. Prefer it inside the page or in Chrome's side panel? Pick either in Settings. In full screen it opens inside the page, so it never pulls you out to another desktop.
 
-**It never touches the pages you visit**
+Private by design
+Quick Search never reads the pages you visit. The only thing that leaves your device is what you type, sent to Google Suggest for autocomplete, and you can turn that off in Settings. No account, no analytics, no tracking.
 
-Quick Search asks for no access to website content and reads nothing from the pages you browse —
-there is no "read and change all your data on all websites" in its permissions, because it does not
-need it. When you choose the in-page overlay (or use Chrome full screen), it places its own search
-box over the current tab only when you press the shortcut — the page itself is never read.
+Keyboard first
+• Tab — switch between Google, Perplexity, DuckDuckGo, Bing, Brave and You.com
+• t, h, b — search only tabs, history or bookmarks
+• > — browser commands: close, pin, duplicate or bookmark a tab, open incognito
+• yt, gh, npm, mdn, w, so — search YouTube, GitHub, npm, MDN, Wikipedia or Stack Overflow
+• Cmd/Ctrl+1–9 — open a result directly
+• Esc — clear or close
 
-The only thing that ever leaves your device is the text you type, sent to Google Suggest for
-autocomplete — and that is a single toggle in Settings. Turn web suggestions off and Quick Search
-makes no network requests at all. Everything else runs locally: your settings and recent searches
-stay in your browser, and nothing is uploaded, synced or tracked.
+Also in the address bar: type qs, then Space, then your search.
 
-**Fast, because local results don't wait on the network**
-
-Tabs, history and bookmarks appear as you type, on every keystroke. Web suggestions merge in when
-they arrive without moving your selection, so you're never racing a list that shifts under you.
-Results are ranked by how recently and how often you actually visited them — not just by how well
-the text matched — and a page that's open, bookmarked and in your history collapses into one row
-instead of three.
-
-**Narrow it down with a prefix**
-
-• t — open tabs only
-• h — history only
-• b — bookmarks only
-• > — browser commands
-• yt, gh, npm, mdn, w, so — search YouTube, GitHub, npm, MDN, Wikipedia or Stack Overflow directly
-
-**Six search engines, one keystroke**
-
-Press Tab to cycle Google, Perplexity, DuckDuckGo, Bing, Brave and You.com. The first row always
-shows exactly which engine Enter will use, so you never have to guess.
-
-**Browser commands without leaving the keyboard**
-
-Type > to close, duplicate, pin, reload or bookmark the current tab, open a new incognito window, or
-jump to your history, downloads, bookmarks or extensions.
-
-**Light, dark, or follow your system**
-
-One click in the footer cycles system, light and dark — or type > and pick "Switch theme". Quick
-Search matches your system automatically until you tell it otherwise.
-
-**Also in the address bar**
-
-Type qs, press Space, then your search — for when you don't want a window at all.
-
-**Keyboard reference**
-
-• ↑ ↓ — move through results
-• Enter — open the selected result
-• Tab / Shift+Tab — next / previous search engine
-• Cmd or Ctrl + 1-9 — jump straight to a result
-• Esc — clear the query; on an empty query, close the launcher
-
-Open source. No account, no analytics, no telemetry.
+Light, dark or system theme. Open source.
+```
 
 ---
 
