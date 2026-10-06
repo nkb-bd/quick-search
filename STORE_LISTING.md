@@ -34,7 +34,9 @@ ranked together, and opens whatever you pick.
 Most command palettes inject themselves into the page you're on, which means they simply don't
 appear on chrome:// pages, the Chrome Web Store, PDFs, or a blank new tab. Quick Search opens its
 own window, centered on your screen, so the shortcut works the same everywhere — including the
-settings page you were already looking at.
+settings page you were already looking at. Prefer it inside the page, or docked in Chrome's side
+panel? Pick either in Settings. In full screen it opens inside the page automatically, so it never
+pulls you out to another desktop.
 
 **It never touches the pages you visit**
 
