@@ -97,7 +97,13 @@ async function run(result?: Result) {
     return
   }
 
-  window.close()
+  closeLauncher()
+}
+
+// In the in-page overlay window.close() is a no-op; the injected host removes the iframe instead.
+function closeLauncher() {
+  if (window.top !== window) window.parent.postMessage('quick-search:close', '*')
+  else window.close()
 }
 
 function onKeydown(event: KeyboardEvent) {
@@ -120,7 +126,7 @@ function onKeydown(event: KeyboardEvent) {
         query.value = ''
         return
       }
-      return window.close()
+      return closeLauncher()
   }
 
   if ((event.metaKey || event.ctrlKey) && /^[1-9]$/.test(event.key)) {

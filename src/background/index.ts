@@ -1,7 +1,7 @@
 import { searchUrl } from '../lib/engines'
 import { clearRecentSearches } from '../lib/recent'
-import { loadSettings } from '../lib/settings'
-import { launcherContext, openLauncher } from './launcherWindow'
+import { DEFAULT_SETTINGS, SETTINGS_KEY, loadSettings, type OpenMode, type Settings } from '../lib/settings'
+import { launcherContext, openLauncher, openSidePanel } from './launcherWindow'
 
 const SUGGEST_ENDPOINT = 'https://suggestqueries.google.com/complete/search'
 
@@ -11,12 +11,28 @@ chrome.runtime.onInstalled.addListener(details => {
   }
 })
 
-chrome.action.onClicked.addListener(() => {
-  void openLauncher()
+// Kept in memory so the side panel can open synchronously, before the user gesture expires.
+let openMode: OpenMode = DEFAULT_SETTINGS.openMode
+const settingsReady = loadSettings().then(settings => (openMode = settings.openMode))
+
+chrome.storage.onChanged.addListener(changes => {
+  const next = changes[SETTINGS_KEY]?.newValue as Partial<Settings> | undefined
+  if (next?.openMode) openMode = next.openMode
 })
 
-chrome.commands.onCommand.addListener(command => {
-  if (command === 'open-launcher') void openLauncher()
+function launch(tab?: chrome.tabs.Tab) {
+  if (openMode === 'sidePanel' && tab?.windowId !== undefined && chrome.sidePanel) {
+    openSidePanel(tab).catch(() => openLauncher('overlay'))
+    return
+  }
+
+  void settingsReady.then(() => openLauncher(openMode))
+}
+
+chrome.action.onClicked.addListener(tab => launch(tab))
+
+chrome.commands.onCommand.addListener((command, tab) => {
+  if (command === 'open-launcher') launch(tab)
 })
 
 type Respond = (response?: unknown) => void

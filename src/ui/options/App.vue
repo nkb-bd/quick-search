@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { ENGINES, selectableEngines } from '../../lib/engines'
 import { clearRecentSearches } from '../../lib/recent'
-import { applyTheme, DEFAULT_SETTINGS, loadSettings, saveSettings, type Settings, type ThemeMode } from '../../lib/settings'
+import { applyTheme, DEFAULT_SETTINGS, loadSettings, saveSettings, type OpenMode, type Settings, type ThemeMode } from '../../lib/settings'
 
 const settings = ref<Settings>({ ...DEFAULT_SETTINGS })
 const shortcut = ref<string | null>(null)
@@ -17,6 +17,13 @@ const SOURCES: { key: keyof Settings['sources']; label: string; hint: string }[]
   { key: 'history', label: 'Browsing history', hint: 'Search pages you have visited' },
   { key: 'suggest', label: 'Web suggestions', hint: 'Sends what you type to Google Suggest' },
 ]
+
+const OPEN_MODES: { value: OpenMode; label: string; hint: string }[] = [
+  { value: 'popup', label: 'Popup window', hint: 'A small window over Chrome. Opens inside the page when Chrome is full screen.' },
+  { value: 'overlay', label: 'Overlay on the page', hint: 'Opens inside the current tab. Uses a popup on pages like chrome://.' },
+  { value: 'sidePanel', label: 'Side panel', hint: 'Docks on the right and stays open. Works on every page.' },
+]
+const openModes = OPEN_MODES.filter(mode => mode.value !== 'sidePanel' || 'sidePanel' in chrome)
 
 onMounted(async () => {
   settings.value = await loadSettings()
@@ -67,6 +74,27 @@ async function clearData() {
           Change
         </button>
       </div>
+
+      <fieldset class="setting choice">
+        <legend class="setting__label">Open the launcher as</legend>
+        <label
+          v-for="mode in openModes"
+          :key="mode.value"
+          class="choice__option"
+        >
+          <input
+            type="radio"
+            name="openMode"
+            :value="mode.value"
+            :checked="settings.openMode === mode.value"
+            @change="update({ openMode: mode.value })"
+          >
+          <span>
+            <span class="setting__label">{{ mode.label }}</span>
+            <span class="setting__hint">{{ mode.hint }}</span>
+          </span>
+        </label>
+      </fieldset>
     </div>
 
     <h2>Default engine</h2>

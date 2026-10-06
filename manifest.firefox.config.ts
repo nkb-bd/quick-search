@@ -9,6 +9,7 @@ export default defineManifest((env) => ({
       id: env["FIREFOX_ADDON_ID"],
     },
   },
+  side_panel: undefined,
   background: {
     scripts: ["src/background/index.ts"],
     type: "module",
@@ -17,8 +18,8 @@ export default defineManifest((env) => ({
   permissions: [
     // @ts-expect-error permissions is always an array in the shared manifest
     ...ManifestConfig.permissions.filter(
-      // "favicon" is Chrome-only; Firefox has no chrome-extension://…/_favicon/ endpoint
-      (permission) => !["background", "favicon"].includes(permission),
+      // "favicon" and "sidePanel" are Chrome-only
+      (permission) => !["background", "favicon", "sidePanel"].includes(permission),
     ),
   ],
 }))

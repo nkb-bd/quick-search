@@ -2,9 +2,12 @@ import { DEFAULT_ENGINE_ID } from './engines'
 
 export type ThemeMode = 'system' | 'light' | 'dark'
 
+export type OpenMode = 'popup' | 'overlay' | 'sidePanel'
+
 export interface Settings {
   engineId: string
   theme: ThemeMode
+  openMode: OpenMode
   sources: { tabs: boolean; bookmarks: boolean; history: boolean; suggest: boolean }
 }
 
@@ -13,6 +16,7 @@ export const SETTINGS_KEY = 'settings'
 export const DEFAULT_SETTINGS: Settings = {
   engineId: DEFAULT_ENGINE_ID,
   theme: 'system',
+  openMode: 'popup',
   sources: { tabs: true, bookmarks: true, history: true, suggest: true },
 }
 

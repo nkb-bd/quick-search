@@ -1,5 +1,6 @@
 const L: Record<string, any> = {}
 const created: any[] = []
+let popupGone = false
 const store: Record<string, any> = {}
 
 ;(globalThis as any).fetch = async (url: string) => {
@@ -20,10 +21,15 @@ const store: Record<string, any> = {}
     onInputChanged: { addListener: (fn: any) => (L.inputChanged = fn) },
     onInputEntered: { addListener: (fn: any) => (L.inputEntered = fn) },
   },
-  storage: { local: {
-    get: async (k: string) => ({ [k]: store[k] }),
-    set: async (p: any) => Object.assign(store, p),
-  } },
+  storage: {
+    local: {
+      get: async (k: string) => ({ [k]: store[k] }),
+      set: async (p: any) => Object.assign(store, p),
+    },
+    onChanged: { addListener: (fn: any) => (L.storageChanged = fn) },
+  },
+  sidePanel: { open: async (o: any) => { created.push(['sidePanel.open', o]) } },
+  scripting: { executeScript: async (o: any) => { created.push(['inject', o]); return [{}] } },
   tabs: {
     create: async (o: any) => { created.push(['tabs.create', o]); return { id: 1 } },
     update: async (o: any) => { created.push(['tabs.update', o]); return { id: 1 } },
@@ -31,9 +37,9 @@ const store: Record<string, any> = {}
   },
   windows: {
     WINDOW_ID_NONE: -1,
-    getLastFocused: async () => ({ id: 1, left: 0, top: 0, width: 1440, height: 900 }),
+    getLastFocused: async () => ({ id: 1, left: 0, top: 0, width: 1440, height: 900, state: 'normal' }),
     create: async (o: any) => { created.push(['windows.create', o]); return { id: 9 } },
-    update: async () => {}, remove: async () => {},
+    update: async () => { if (popupGone) throw new Error('No window with id') }, remove: async () => {},
     onRemoved: { addListener: () => {} }, onFocusChanged: { addListener: () => {} },
   },
   history: { search: async () => [{ id: 'h1', title: 'GitHub Docs', url: 'https://docs.github.com' }] },
@@ -96,6 +102,24 @@ created.length = 0
 await L.inputEntered('https://example.com', 'newForegroundTab')
 check('omnibox opens a pasted URL directly',
   created.some(c => c[0] === 'tabs.create' && c[1].url === 'https://example.com'), created)
+
+// open mode follows settings
+L.storageChanged({ settings: { newValue: { openMode: 'sidePanel' } } })
+created.length = 0
+L.command('open-launcher', { id: 5, windowId: 2 })
+check('side panel mode opens the panel synchronously, inside the gesture',
+  created.some(c => c[0] === 'sidePanel.open' && c[1].windowId === 2), created)
+created.length = 0
+L.clicked({ id: 5, windowId: 2 })
+check('toolbar click also honours side panel mode', created.some(c => c[0] === 'sidePanel.open'), created)
+
+L.storageChanged({ settings: { newValue: { openMode: 'overlay' } } })
+popupGone = true
+created.length = 0
+L.command('open-launcher', { id: 5, windowId: 2 })
+await new Promise(r => setTimeout(r, 10))
+check('overlay mode injects into the page', created.some(c => c[0] === 'inject'), created)
+check('overlay mode opens no popup window', !created.some(c => c[0] === 'windows.create'), created)
 
 console.log(failures ? `\n${failures} FAILED` : '\nall passed')
 process.exit(failures ? 1 : 0)

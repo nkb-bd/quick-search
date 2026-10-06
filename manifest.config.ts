@@ -44,7 +44,17 @@ export default {
     keyword: "qs",
   },
   offline_enabled: true,
-  permissions: ["storage", "tabs", "history", "bookmarks", "favicon"],
+  // activeTab, scripting and sidePanel add no install warning, so existing users stay enabled.
+  permissions: ["storage", "tabs", "history", "bookmarks", "favicon", "activeTab", "scripting", "sidePanel"],
+  side_panel: {
+    default_path: "src/ui/launcher/index.html",
+  },
+  web_accessible_resources: [
+    {
+      resources: ["src/ui/launcher/index.html"],
+      matches: ["<all_urls>"],
+    },
+  ],
   host_permissions: ["https://suggestqueries.google.com/*"],
   commands: {
     "open-launcher": {
