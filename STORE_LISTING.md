@@ -25,6 +25,9 @@ not here, or the two will drift.
 
 Plain text — the dashboard does not render Markdown. Paste as-is.
 
+Never list engine or site names here: a list of brands is rejected as keyword spam
+(Yellow Argon, 1.1.0). Describe the feature and point to Settings instead.
+
 ```text
 Search your open tabs, history, bookmarks and the web from one shortcut.
 
@@ -37,10 +40,10 @@ Private by design
 Quick Search never reads the pages you visit. The only thing that leaves your device is what you type, sent to Google Suggest for autocomplete, and you can turn that off in Settings. No account, no analytics, no tracking.
 
 Keyboard first
-• Tab — switch between Google, Perplexity, DuckDuckGo, Bing, Brave and You.com
+• Tab — switch search engine; choose your default in Settings
 • t, h, b — search only tabs, history or bookmarks
 • > — browser commands: close, pin, duplicate or bookmark a tab, open incognito
-• yt, gh, npm, mdn, w, so — search YouTube, GitHub, npm, MDN, Wikipedia or Stack Overflow
+• Short prefixes search popular sites directly; the full list is in Settings
 • Cmd/Ctrl+1–9 — open a result directly
 • Esc — clear or close
 
