@@ -1,5 +1,29 @@
 # Changelog
 
+## 1.1.1 — 2026-10-08
+
+### Fixed
+
+- **Launcher modes stay readable at narrow widths and high zoom.** The settings choices now use a
+  responsive card layout instead of a floated fieldset legend that pushed popup text outside the
+  panel.
+- **The shortcut and toolbar button now toggle the side panel.** Pressing either control again
+  closes an open Quick Search panel instead of leaving it stuck open.
+
+### Added
+
+- **Settings access from the launcher.** A subtle gear beside the theme control opens Settings and
+  includes the tooltip and accessible label “Open settings.”
+
+### Changed
+
+- **Fresh installs open Quick Search in the side panel by default.** Existing installations keep
+  their current launcher mode, including the previous implicit popup default.
+- Settings, onboarding and launcher surfaces have a clearer responsive layout, consistent spacing
+  and more deliberate borders and colour states.
+- The minimum supported Chrome version is now 141 because closing an open side panel uses
+  `chrome.sidePanel.close()`.
+
 ## 1.1.0 — 2026-10-07
 
 ### Fixed
