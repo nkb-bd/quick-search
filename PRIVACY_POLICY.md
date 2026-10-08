@@ -21,7 +21,7 @@ network requests at all.
 | `favicon` | Render site icons from Chrome's local favicon cache — no icon requests to any server |
 | `storage` | Remember your engine, theme, source toggles, and recent searches |
 | `activeTab`, `scripting` | Show the launcher inside the current page (overlay mode, or when Chrome is full screen) — only when you press the shortcut or click the icon |
-| `sidePanel` | Show the launcher in Chrome's side panel, if you choose that in Settings |
+| `sidePanel` | Show the launcher in Chrome's side panel, the default opening mode |
 
 Each source can be disabled individually in Settings. Reading is on-demand and in-memory: Quick Search
 never copies your history or bookmarks anywhere.

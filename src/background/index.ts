@@ -1,19 +1,20 @@
 import { searchUrl } from '../lib/engines'
 import { clearRecentSearches } from '../lib/recent'
-import { DEFAULT_SETTINGS, SETTINGS_KEY, loadSettings, type OpenMode, type Settings } from '../lib/settings'
-import { launcherContext, openLauncher, openSidePanel } from './launcherWindow'
+import { DEFAULT_SETTINGS, SETTINGS_KEY, loadSettings, saveSettings, type OpenMode, type Settings } from '../lib/settings'
+import { launcherContext, openLauncher, toggleSidePanel } from './launcherWindow'
 
 const SUGGEST_ENDPOINT = 'https://suggestqueries.google.com/complete/search'
 
+// Kept in memory so the selected mode is available to the shortcut and toolbar handlers.
+let openMode: OpenMode = DEFAULT_SETTINGS.openMode
+const settingsReady = loadSettings().then(settings => (openMode = settings.openMode))
+
 chrome.runtime.onInstalled.addListener(details => {
   if (details.reason === 'install') {
+    void saveSettings({ openMode: 'sidePanel' }).then(settings => (openMode = settings.openMode))
     chrome.tabs.create({ url: chrome.runtime.getURL('src/ui/welcome/index.html') })
   }
 })
-
-// Kept in memory so the side panel can open synchronously, before the user gesture expires.
-let openMode: OpenMode = DEFAULT_SETTINGS.openMode
-const settingsReady = loadSettings().then(settings => (openMode = settings.openMode))
 
 chrome.storage.onChanged.addListener(changes => {
   const next = changes[SETTINGS_KEY]?.newValue as Partial<Settings> | undefined
@@ -22,7 +23,7 @@ chrome.storage.onChanged.addListener(changes => {
 
 function launch(tab?: chrome.tabs.Tab) {
   if (openMode === 'sidePanel' && tab?.windowId !== undefined && chrome.sidePanel) {
-    openSidePanel(tab).catch(() => openLauncher('overlay'))
+    toggleSidePanel(tab).catch(() => openLauncher('overlay'))
     return
   }
 

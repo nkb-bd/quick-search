@@ -23,7 +23,7 @@ const SUGGESTIONS: Record<string, string[]> = {
 
 const match = (text: string, query: string) => text.toLowerCase().includes(query.toLowerCase())
 
-const store: Record<string, unknown> = {}
+const store: Record<string, unknown> = { settings: { openMode: 'sidePanel' } }
 
 ;(globalThis as any).chrome = {
   runtime: {
@@ -59,6 +59,7 @@ const store: Record<string, unknown> = {}
     create: async () => {},
   },
   commands: { getAll: async () => [{ name: 'open-launcher', shortcut: '⌘⇧Space' }] },
+  sidePanel: {},
 }
 
 export {}

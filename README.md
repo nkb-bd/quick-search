@@ -11,8 +11,8 @@ Built with Vue 3, Vite and Manifest V3.
 
 - **One window, every source** — open tabs, browsing history, bookmarks, web suggestions and browser
   commands, ranked together
-- **Opens centered** — a floating window in the upper third of your focused window, not a panel pinned
-  to the toolbar corner, and it works on `chrome://` pages and the Web Store
+- **Keeps your page visible** — opens in Chrome's side panel by default, stays available as you browse,
+  and toggles closed with the same shortcut; popup and in-page overlay modes remain available
 - **Instant local results** — tabs, history and bookmarks render on every keystroke; web suggestions
   merge in when they arrive, without moving your selection
 - **Frecency ranking** — matches are weighted by how recently and how often you visited, not just by
@@ -34,7 +34,7 @@ Built with Vue 3, Vite and Manifest V3.
 
 Chrome can only suggest a shortcut, so it may arrive unassigned if another extension holds that
 combination. The welcome page shows the shortcut you actually have and links to
-`chrome://extensions/shortcuts`.
+`chrome://extensions/shortcuts`. Press the assigned shortcut again to close the side panel.
 
 Full key reference: [KEYBOARD_SHORTCUTS.md](KEYBOARD_SHORTCUTS.md).
 
@@ -102,7 +102,7 @@ Adding a source means writing one file in `lib/sources/` that implements `Source
 
 ## Browser support
 
-Chrome 104+ and Chromium browsers (Edge, Brave, Arc, Vivaldi). A Firefox build is produced by
+Chrome 141+ and current Chromium browsers (Edge, Brave, Arc, Vivaldi). A Firefox build is produced by
 `pnpm build:firefox`; the `favicon` permission is Chrome-only and is filtered out there, so Firefox
 falls back to glyph icons.
 

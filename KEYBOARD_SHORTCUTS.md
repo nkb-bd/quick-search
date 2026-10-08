@@ -13,6 +13,9 @@ link to `chrome://extensions/shortcuts` if you need to set one.
 
 Clicking the toolbar icon opens the same launcher.
 
+Quick Search uses Chrome's side panel by default. Press the shortcut or click the toolbar icon again
+to close it. You can choose popup or in-page overlay mode in **Settings**.
+
 ## Inside the launcher
 
 | Key | Action |
