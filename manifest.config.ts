@@ -22,7 +22,7 @@ export default {
   // semver is OK in "version_name"
   version_name: version,
   manifest_version: 3,
-  minimum_chrome_version: "104",
+  minimum_chrome_version: "141",
   action: {
     default_title: "Quick Search",
     default_icon: {

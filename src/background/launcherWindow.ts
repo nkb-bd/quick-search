@@ -4,6 +4,10 @@ const WIDTH = 620
 const HEIGHT = 540
 const PAGE = 'src/ui/launcher/index.html'
 
+type SidePanelWithClose = typeof chrome.sidePanel & {
+  close?: (options: { tabId?: number; windowId?: number }) => Promise<void>
+}
+
 let launcherWindowId: number | undefined
 let origin: { originTabId?: number; originWindowId?: number } = {}
 
@@ -35,6 +39,27 @@ export async function openLauncher(mode: OpenMode = 'popup'): Promise<void> {
 export function openSidePanel(tab: chrome.tabs.Tab): Promise<void> {
   origin = { originTabId: tab.id, originWindowId: tab.windowId }
   return chrome.sidePanel.open({ windowId: tab.windowId })
+}
+
+/** Toggle when current Chrome APIs can identify and close the active panel; otherwise open it. */
+export async function toggleSidePanel(tab: chrome.tabs.Tab): Promise<void> {
+  origin = { originTabId: tab.id, originWindowId: tab.windowId }
+  const sidePanel = chrome.sidePanel as SidePanelWithClose
+  const close = sidePanel.close
+
+  if (chrome.runtime.getContexts && close) {
+    const contexts = await chrome.runtime.getContexts({
+      contextTypes: ['SIDE_PANEL'],
+      windowIds: [tab.windowId],
+    })
+
+    if (contexts.length) {
+      await close.call(sidePanel, { windowId: tab.windowId })
+      return
+    }
+  }
+
+  await sidePanel.open({ windowId: tab.windowId })
 }
 
 async function openPopup(anchor: chrome.windows.Window | null): Promise<void> {

@@ -18,6 +18,10 @@ const recent = ref<string[]>([])
 const inputEl = ref<HTMLInputElement | null>(null)
 const listEl = ref<HTMLElement | null>(null)
 
+type SidePanelWithClose = typeof chrome.sidePanel & {
+  close?: (options: { tabId?: number; windowId?: number }) => Promise<void>
+}
+
 const { query, results, selected, selectedIndex, isFetching, move } = useLauncher(
   () => engineId.value,
   () => sources.value,
@@ -78,6 +82,10 @@ async function cycleTheme() {
   inputEl.value?.focus()
 }
 
+function openSettings() {
+  void chrome.runtime.openOptionsPage()
+}
+
 async function run(result?: Result) {
   if (!result) return
 
@@ -101,7 +109,22 @@ async function run(result?: Result) {
 }
 
 // In the in-page overlay window.close() is a no-op; the injected host removes the iframe instead.
-function closeLauncher() {
+async function closeLauncher() {
+  const sidePanel = chrome.sidePanel as SidePanelWithClose | undefined
+  const close = sidePanel?.close
+
+  if (chrome.runtime.getContexts && close) {
+    const contexts = await chrome.runtime.getContexts({
+      contextTypes: ['SIDE_PANEL'],
+      documentUrls: [window.location.href],
+    })
+    const panel = contexts[0]
+    if (panel?.windowId !== undefined && panel.windowId !== -1) {
+      await close.call(sidePanel, { windowId: panel.windowId })
+      return
+    }
+  }
+
   if (window.top !== window) window.parent.postMessage('quick-search:close', '*')
   else window.close()
 }
@@ -126,7 +149,7 @@ function onKeydown(event: KeyboardEvent) {
         query.value = ''
         return
       }
-      return closeLauncher()
+      return void closeLauncher()
   }
 
   if ((event.metaKey || event.ctrlKey) && /^[1-9]$/.test(event.key)) {
@@ -153,6 +176,13 @@ async function forgetRecent() {
     @keydown="onKeydown"
   >
     <div class="field">
+      <svg
+        class="field__search-icon"
+        viewBox="0 0 20 20"
+        aria-hidden="true"
+      >
+        <path d="m14.5 14.5 3 3m-1.75-8.25a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0Z" />
+      </svg>
       <span
         class="field__engine"
         :class="{ 'field__engine--changed': engineFlash }"
@@ -178,6 +208,14 @@ async function forgetRecent() {
         class="field__spinner"
         aria-hidden="true"
       />
+      <button
+        class="field__close"
+        title="Close Quick Search (Esc)"
+        aria-label="Close Quick Search"
+        @click="closeLauncher"
+      >
+        ×
+      </button>
     </div>
 
     <div
@@ -253,12 +291,27 @@ async function forgetRecent() {
         <span><kbd>↑↓</kbd> move</span>
         <span><kbd>⏎</kbd> open</span>
         <button
-          class="theme"
+          class="utility-button theme"
           :title="`Theme: ${theme}`"
           :aria-label="`Theme: ${theme}. Click to change`"
           @click="cycleTheme"
         >
           {{ THEME_ICON[theme] }}
+        </button>
+        <button
+          class="utility-button"
+          title="Open settings"
+          aria-label="Open settings"
+          @click="openSettings"
+        >
+          <svg
+            class="utility-button__icon"
+            viewBox="0 0 20 20"
+            aria-hidden="true"
+          >
+            <path d="M8.8 2.6h2.4l.5 1.8c.4.2.8.4 1.2.7l1.8-.5 1.2 2.1-1.3 1.3c.1.4.1.9 0 1.3l1.3 1.3-1.2 2.1-1.8-.5c-.4.3-.8.5-1.2.7l-.5 1.8H8.8l-.5-1.8c-.4-.2-.8-.4-1.2-.7l-1.8.5-1.2-2.1 1.3-1.3a5 5 0 0 1 0-1.3L4.1 6.7l1.2-2.1 1.8.5c.4-.3.8-.5 1.2-.7l.5-1.8Z" />
+            <circle cx="10" cy="8.7" r="2.2" />
+          </svg>
         </button>
       </div>
     </div>

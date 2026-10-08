@@ -1,6 +1,7 @@
 const L: Record<string, any> = {}
 const created: any[] = []
 let popupGone = false
+let sidePanelOpen = false
 const store: Record<string, any> = {}
 
 ;(globalThis as any).fetch = async (url: string) => {
@@ -11,6 +12,11 @@ const store: Record<string, any> = {}
 ;(globalThis as any).chrome = {
   runtime: {
     getURL: (p: string) => `chrome-extension://abc/${p}`,
+    getContexts: async ({ contextTypes, windowIds }: any) => (
+      sidePanelOpen && contextTypes?.includes('SIDE_PANEL') && windowIds?.includes(2)
+        ? [{ contextType: 'SIDE_PANEL', windowId: 2 }]
+        : []
+    ),
     onInstalled: { addListener: (fn: any) => (L.installed = fn) },
     onMessage: { addListener: (fn: any) => (L.message = fn) },
   },
@@ -28,7 +34,10 @@ const store: Record<string, any> = {}
     },
     onChanged: { addListener: (fn: any) => (L.storageChanged = fn) },
   },
-  sidePanel: { open: async (o: any) => { created.push(['sidePanel.open', o]) } },
+  sidePanel: {
+    open: async (o: any) => { sidePanelOpen = true; created.push(['sidePanel.open', o]) },
+    close: async (o: any) => { sidePanelOpen = false; created.push(['sidePanel.close', o]) },
+  },
   scripting: { executeScript: async (o: any) => { created.push(['inject', o]); return [{}] } },
   tabs: {
     create: async (o: any) => { created.push(['tabs.create', o]); return { id: 1 } },
@@ -60,15 +69,23 @@ check('registers an omnibox default suggestion', !!L.defaultSuggestion?.descript
 L.installed({ reason: 'update' })
 check('update does not reopen onboarding', !created.some(c => c[0] === 'tabs.create'), created)
 L.installed({ reason: 'install' })
+await new Promise(r => setTimeout(r, 10))
 check('install opens the welcome page',
   created.some(c => c[0] === 'tabs.create' && String(c[1].url).includes('welcome')), created)
+check('fresh install saves the side panel as the opening mode',
+  store.settings?.openMode === 'sidePanel', store.settings)
 
-// shortcut + icon both open the launcher
+// The new-user default is the side panel, and the shortcut toggles it.
 created.length = 0
-L.command('open-launcher')
+L.command('open-launcher', { id: 5, windowId: 2 })
 await new Promise(r => setTimeout(r, 10))
-check('open-launcher command opens the launcher window',
-  created.some(c => c[0] === 'windows.create' && c[1].type === 'popup'), created)
+check('open-launcher command opens the side panel by default',
+  created.some(c => c[0] === 'sidePanel.open' && c[1].windowId === 2), created)
+created.length = 0
+L.command('open-launcher', { id: 5, windowId: 2 })
+await new Promise(r => setTimeout(r, 10))
+check('repeating the shortcut closes the open side panel',
+  created.some(c => c[0] === 'sidePanel.close' && c[1].windowId === 2), created)
 created.length = 0
 L.command('some-other-command')
 await new Promise(r => setTimeout(r, 10))
@@ -76,7 +93,7 @@ check('unknown commands are ignored', created.length === 0, created)
 
 // message router
 const ctx = await respond({ action: 'getContext' })
-check('getContext returns the origin tab', (ctx as any)?.originTabId === 1, ctx)
+check('getContext returns the most recent origin tab', (ctx as any)?.originTabId === 5, ctx)
 const sug = await respond({ action: 'suggest', term: 'gith' })
 check('suggest unwraps the Google response shape',
   JSON.stringify((sug as any)?.suggestions) === JSON.stringify(['github', 'github actions']), sug)
@@ -107,11 +124,13 @@ check('omnibox opens a pasted URL directly',
 L.storageChanged({ settings: { newValue: { openMode: 'sidePanel' } } })
 created.length = 0
 L.command('open-launcher', { id: 5, windowId: 2 })
-check('side panel mode opens the panel synchronously, inside the gesture',
+await new Promise(r => setTimeout(r, 10))
+check('side panel mode opens the panel in the active window',
   created.some(c => c[0] === 'sidePanel.open' && c[1].windowId === 2), created)
 created.length = 0
 L.clicked({ id: 5, windowId: 2 })
-check('toolbar click also honours side panel mode', created.some(c => c[0] === 'sidePanel.open'), created)
+await new Promise(r => setTimeout(r, 10))
+check('toolbar click also toggles side panel mode', created.some(c => c[0] === 'sidePanel.close'), created)
 
 L.storageChanged({ settings: { newValue: { openMode: 'overlay' } } })
 popupGone = true
